@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+    <script src="sss.js"></script>
+    <script type="text/javascript">
+        //https://www.html5rocks.com/zh/tutorials/file/filesystem/  浏览器操作上传缓存中文件
+        //如果您是首次调用 requestFileSystem()，系统会为您的应用创建新的存储。
+        //请注意，这是沙箱文件系统，也就是说，一个网络应用无法访问另一个应用的文件。这也意味着您无法在用户硬盘上的任意文件夹（例如“我的图片”、“我的文档”等）中读/写文件。
+        
+        
+        window.requestFileSystem = window.requestFileSystem || window.webkitRequestFileSystem;
+
+        // window.requestFileSystem(type, size, successCallback, opt_errorCallback)     
+        //window.TEMPORARY 存储的数据可由浏览器自行决定删除 和 window.PERSISTENT 持久储存
+        function onInitFs(fs) {
+            fs.root.getFile('log.txt', { //读取文件
+                create: true,
+                exclusive: true
+            }, function (fileEntry) {
+
+                // fileEntry.isFile === true
+                // fileEntry.name == 'log.txt'
+                // fileEntry.fullPath == '/log.txt'
+
+            }, errorHandler);
+        }
+
+        function errorHandler(fs) {
+            console.log('失败: ' + fs.name);
+        }
+
+
+        function onInitFs(fs) {  //写入文件
+
+            fs.root.getFile('log.txt', {
+                create: true
+            }, function (fileEntry) {
+
+                // Create a FileWriter object for our FileEntry (log.txt).
+                fileEntry.createWriter(function (fileWriter) {
+
+                    fileWriter.onwriteend = function (e) {
+                        console.log('Write completed.');
+                    };
+
+                    fileWriter.onerror = function (e) {
+                        console.log('Write failed: ' + e.toString());
+                    };
+
+                    // Create a new Blob and write it to log.txt.
+                    var bb = new BlobBuilder(); // Note: window.WebKitBlobBuilder in Chrome 12.
+                    bb.append('Lorem Ipsum');
+                    fileWriter.write(bb.getBlob('text/plain'));
+
+                }, errorHandler);
+
+            }, errorHandler);
+        }
+
+        window.requestFileSystem(window.TEMPORARY, 1024 * 1024 /*5MB*/ , onInitFs, errorHandler);
+    </script>
+
+</body>
+
+</html>
