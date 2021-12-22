@@ -1,0 +1,95 @@
+<html>
+
+<head>
+  <title>录屏并下载</title>
+</head>
+
+<body>
+  <selection>
+    <video autoplay id="player"></video>
+    <video id="recordPlayer"></video>
+  </selection>
+  <section>
+    <button id="startScreen">开启录屏</button>
+    <button id="startCamera">开启摄像头</button>
+    <button id="stop">结束</button>
+    <button id="reply">回放</button>
+    <button id="download">下载</button>
+    </selection>
+
+    <script>
+      const player = document.querySelector('#player');
+      const recordPlayer = document.querySelector('#recordPlayer');
+      let blobs = [], mediaRecorder;
+
+      async function record(recordType) {
+        const getMediaMethod = recordType === 'screen' ? 'getDisplayMedia' : 'getUserMedia';
+        const stream = await navigator.mediaDevices[getMediaMethod]({
+          video: {
+            width: 500,
+            height: 300,
+            frameRate: 20
+          }
+        });
+        player.srcObject = stream;
+
+        mediaRecorder = new MediaRecorder(stream, {
+          mimeType: 'video/webm'
+        });
+        mediaRecorder.ondataavailable = (e) => {
+          blobs.push(e.data);
+        };
+        mediaRecorder.start(100);
+      }
+
+      const downloadBtn = document.querySelector('#download');
+      const startScreenBtn = document.querySelector('#startScreen');
+      const startCameraBtn = document.querySelector('#startCamera');
+      const stopBtn = document.querySelector('#stop');
+      const replyBtn = document.querySelector('#reply');
+
+      startScreenBtn.addEventListener('click', () => {
+        record('screen');
+      });
+      startCameraBtn.addEventListener('click', () => {
+        record('camera');
+      });
+
+      stopBtn.addEventListener('click', () => {
+        mediaRecorder && mediaRecorder.stop();
+      });
+
+      replyBtn.addEventListener('click', () => {
+        const blob = new Blob(blobs, { type: 'video/webm' });
+        recordPlayer.src = URL.createObjectURL(blob);
+        recordPlayer.play();
+      });
+
+      downloadBtn.addEventListener('click', () => {
+        var blob = new Blob(blobs, { type: 'video/webm' });
+        var url = URL.createObjectURL(blob);
+
+        var a = document.createElement('a');
+        a.href = url;
+        a.style.display = 'none';
+        a.download = 'record.webm';
+        a.click();
+      });
+
+
+//       音视频通信分为 采集、编码、通信、解码、渲染 这五步，浏览器的音视频通信相关的 API 叫做 WebRTC。
+
+//       我们实现了下采集的部分来入门了下 WebRTC，还支持了回放和下载。
+
+//       涉及到的 api 有 3 个：
+
+//         navigator.mediaDevices.getUserMedia：获取麦克风、摄像头的流
+//         navigator.mediaDevices.getDisplayMedia：获取屏幕的流
+//         MediaRecorder：监听流的变化，实现录制
+
+
+  // 做多端rtc的话，直接用声网、zego、trtc等…，千万别自己搞，要不用户设备类型、系统类型 + 版本多到虐
+    </script>
+</body>
+
+</html>
