@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>shadow-dom</title>
+</head>
+
+<body>
+  <div class="wrapper">
+    <a href="https://twitter.com/ireaderinokun">
+      Follow @ireaderinokun
+    </a>
+  </div>
+
+  <!-- /shadow-dom -->
+  <video id='test'></video>
+
+
+  <script>
+    var style = document.createElement('style')
+    // console.log(style)
+
+    style.textContent = `
+      .wrapper {
+        border: 1px solid red;
+        width:100px;
+        height:100px;
+        color:red;
+      }
+    `
+    const head = document.getElementsByTagName('head')[0]
+    head.appendChild(style)
+
+    const wrapper = document.querySelector('.wrapper')
+    const shadow = wrapper.attachShadow({ mode: 'open' })
+
+    //浏览器封装video，保证密封性，shadow-dom还可以用于隔离css
+
+
+
+
+  </script>
+</body>
+
+</html>
