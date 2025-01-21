@@ -37,6 +37,29 @@
         else if (video.canPlayType('application/vnd.apple.mpegurl')) {
             video.src = videoSrc;
         }
+
+
+        //** 原理如下（History API可以实现无刷新的分包加载）： **/
+
+        // // 假设你有一个video元素
+        // var video = document.getElementById('myVideo');
+        //
+        // // 动态加载并添加视频分包
+        // function loadVideoSegment(segmentUrl) {
+        //     // 创建source元素
+        //     var source = document.createElement('source');
+        //     source.src = segmentUrl;
+        //     source.type = 'video/mp4'; // 根据实际情况设置MIME类型
+        //
+        //     // 添加到video元素
+        //     video.appendChild(source);
+        // }
+        //
+        // // 假设你有一个按钮来触发分包加载
+        // document.getElementById('loadSegmentBtn').addEventListener('click', function() {
+        //     var segmentUrl = 'path/to/your/video/segment.mp4';
+        //     loadVideoSegment(segmentUrl);
+        // });
     </script>
 </body>
 
